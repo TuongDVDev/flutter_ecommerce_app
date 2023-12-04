@@ -43,12 +43,20 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
+  void signInUser() {
+    authService.signInUser(
+      context: context,
+      email: _emailController.text,
+      password: _passwordController.text,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // Navigator.pushNamed(context, '', arguments: );
     return Scaffold(
       backgroundColor: GlobalVariables.greyBackgroundColor,
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(8.0),
         child: SafeArea(
           child: Column(
@@ -148,7 +156,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   padding: const EdgeInsets.all(8),
                   color: GlobalVariables.backgroundColor,
                   child: Form(
-                    key: _signUpFormKey,
+                    key: _signInFormKey,
                     child: Column(
                       children: [
                         CustomTextField(
@@ -167,7 +175,11 @@ class _AuthScreenState extends State<AuthScreen> {
                         ),
                         CustomButton(
                           text: 'Sign In',
-                          onTap: () {},
+                          onTap: () {
+                            if (_signInFormKey.currentState!.validate()) {
+                              signInUser();
+                            }
+                          },
                         ),
                       ],
                     ),
