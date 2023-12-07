@@ -161,14 +161,14 @@ class _AuthScreenState extends State<AuthScreen> {
                       children: [
                         CustomTextField(
                           controller: _emailController,
-                          hintText: 'Enter your email',
+                          hintText: 'Email',
                         ),
                         const SizedBox(
                           height: 10,
                         ),
                         CustomTextField(
                           controller: _passwordController,
-                          hintText: 'Enter your password',
+                          hintText: 'Password',
                         ),
                         const SizedBox(
                           height: 10,

@@ -1,5 +1,8 @@
 import 'package:amazon_clone_tutorial/constants/global_variables.dart';
+import 'package:amazon_clone_tutorial/features/account/screens/account_screens.dart';
+import 'package:amazon_clone_tutorial/features/home/screens/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:badges/badges.dart' as badges;
 
 class BottomBar extends StatefulWidget {
   static const String routeName = '/actual-home';
@@ -10,18 +13,35 @@ class BottomBar extends StatefulWidget {
 }
 
 class _BottomBarState extends State<BottomBar> {
-  final int _page = 0;
+  int _page = 0;
   double bottomBarWidth = 42;
   double bottomBarBorderWidth = 5;
+
+  List<Widget> pages = [
+    const HomeScreen(),
+    const AccountScreen(),
+    const Center(
+      child: Text('Cart Page'),
+    ),
+  ];
+
+  void updatePage(int page) {
+    setState(() {
+      _page = page;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      body: pages[_page],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _page,
         selectedItemColor: GlobalVariables.selectedNavbarColor,
         unselectedItemColor: GlobalVariables.unselectedNavbarColor,
         backgroundColor: GlobalVariables.backgroundColor,
         iconSize: 28,
+        onTap: updatePage,
         items: [
           // Home
           BottomNavigationBarItem(
@@ -77,12 +97,12 @@ class _BottomBarState extends State<BottomBar> {
                   ),
                 ),
               ),
-              child: const Badge(
-                // elevation: 0,
-                // badgeContent: const Text(userCartLen.toString()),
-                // badgeColor: Colors.white,
-                child: Icon(
-                  Icons.home_outlined,
+              child: badges.Badge(
+                elevation: 0,
+                badgeContent: const Text('2'),
+                badgeColor: Colors.white,
+                child: const Icon(
+                  Icons.shopping_cart_outlined,
                 ),
               ),
             ),
