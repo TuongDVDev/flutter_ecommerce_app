@@ -8,6 +8,7 @@ const mongoose = require("mongoose");
 //imports 'package:express/express.dart'
 // Imports from other files
 const authRouter = require("./routes/auth");
+const adminRouter = require("./routes/admin");
 
 // Init
 const PORT = 3000;
@@ -17,6 +18,7 @@ const DB = "mongodb+srv://tuongdvdev:Tuongdvuta2001@cluster0.evdabeh.mongodb.net
 // middleware
 app.use(express.json());
 app.use(authRouter);
+app.use(adminRouter);
 // Client -> middleware -> Server -> Client
 //import '.features/auth/screens/auth_screen.dart'
 
