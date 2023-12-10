@@ -6,6 +6,7 @@ import 'package:amazon_clone_tutorial/constants/utils.dart';
 import 'package:amazon_clone_tutorial/models/product.dart';
 import 'package:amazon_clone_tutorial/providers/user_provider.dart';
 import 'package:cloudinary_public/cloudinary_public.dart';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -23,7 +24,9 @@ class AdminServices {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     try {
       final cloudinary = CloudinaryPublic('de2mvcm7j', 'bykmzcnu');
+
       List<String> imageUrls = [];
+
       for (int i = 0; i < images.length; i++) {
         CloudinaryResponse res = await cloudinary.uploadFile(
           CloudinaryFile.fromFile(images[i].path, folder: name),
@@ -48,6 +51,7 @@ class AdminServices {
         },
         body: product.toJson(),
       );
+
       httpErrorHandle(
         response: res,
         context: context,

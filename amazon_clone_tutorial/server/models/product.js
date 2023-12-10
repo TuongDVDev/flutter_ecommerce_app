@@ -11,10 +11,12 @@ const productSchema = mongoose.Schema({
         type: String,
         trim: true,
     },
-    images: [{
-        required: true,
-        type: String,
-    }],
+    images: [
+        {
+            required: true,
+            type: String,
+        },
+    ],
     quantity: {
         required: true,
         type: Number,
@@ -30,5 +32,5 @@ const productSchema = mongoose.Schema({
     // Ratings
 });
 
-const product = mongoose.model('Product', productSchema);
+const Product = mongoose.model("Product", productSchema);
 module.exports = Product;

@@ -1,5 +1,5 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/user');
+const jwt = require("jsonwebtoken");
+const User = require("../models/user");
 
 const admin = async (req, res, next) => {
     try {
@@ -12,7 +12,7 @@ const admin = async (req, res, next) => {
         if (user.type == "user" || user.type == "seller") {
             return res.status(401).json({ msg: "You are not an admin!" });
         }
-        req.user = verified.indexOf;
+        req.user = verified.id;
         req.token = token;
         next();
     } catch (err) {
