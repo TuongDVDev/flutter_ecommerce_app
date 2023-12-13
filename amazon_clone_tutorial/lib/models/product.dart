@@ -7,7 +7,7 @@ class Product {
   final double quantity;
   final String category;
   final List<String> images;
-  String? id;
+  final String? id;
   // final List<Rating>? rating;
   // Rating
 

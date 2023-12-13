@@ -1,20 +1,23 @@
+import 'package:amazon_clone_tutorial/common/widgets/stars.dart';
 import 'package:amazon_clone_tutorial/constants/global_variables.dart';
-import 'package:amazon_clone_tutorial/features/home/widgets/address_box.dart';
-import 'package:amazon_clone_tutorial/features/home/widgets/carousel_image.dart';
-import 'package:amazon_clone_tutorial/features/home/widgets/deal_of_day.dart';
-import 'package:amazon_clone_tutorial/features/home/widgets/top_categories.dart';
 import 'package:amazon_clone_tutorial/features/search/screens/search_screen.dart';
+import 'package:amazon_clone_tutorial/models/product.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatefulWidget {
-  static const String routeName = '/home';
-  const HomeScreen({Key? key}) : super(key: key);
+class ProductDetailScreen extends StatefulWidget {
+  static const String routeName = '/product-details';
+  final Product product;
+  const ProductDetailScreen({
+    Key? key,
+    required this.product,
+  }) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<ProductDetailScreen> createState() => _ProductDetailScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _ProductDetailScreenState extends State<ProductDetailScreen> {
   void navigateToSearchScreen(String query) {
     Navigator.pushNamed(
       context,
@@ -107,19 +110,86 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      body: const SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AddressBox(),
-            SizedBox(
-              height: 10,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    widget.product.id!,
+                  ),
+                  const Stars(
+                    rating: 4,
+                  ),
+                ],
+              ),
             ),
-            TopCategories(),
-            SizedBox(
-              height: 10,
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 20,
+                horizontal: 10,
+              ),
+              child: Text(
+                widget.product.name,
+                style: const TextStyle(
+                  fontSize: 15,
+                ),
+              ),
             ),
-            CarouselImage(),
-            DealOfDay(),
+            CarouselSlider(
+              items: widget.product.images.map((i) {
+                return Builder(
+                  builder: (BuildContext context) => Image.network(
+                    i,
+                    fit: BoxFit.cover,
+                    height: 200,
+                  ),
+                );
+              }).toList(),
+              options: CarouselOptions(
+                viewportFraction: 1,
+                height: 300,
+              ),
+            ),
+            Container(
+              color: Colors.black12,
+              height: 5,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: RichText(
+                text: TextSpan(
+                  text: 'Deal Price: ',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: '\$${widget.product.price}',
+                      style: const TextStyle(
+                        fontSize: 22,
+                        color: Colors.red,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(widget.product.description),
+            ),
+            Container(
+              color: Colors.black12,
+              height: 5,
+            ),
           ],
         ),
       ),
