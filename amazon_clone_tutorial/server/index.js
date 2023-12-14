@@ -10,6 +10,7 @@ const mongoose = require("mongoose");
 const authRouter = require("./routes/auth");
 const adminRouter = require("./routes/admin");
 const productRouter = require("./routes/product");
+const userRouter = require("./routes/user");
 
 // Init
 const PORT = 3000;
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use(authRouter);
 app.use(adminRouter);
 app.use(productRouter);
+app.use(userRouter);
 // Client -> middleware -> Server -> Client
 //import '.features/auth/screens/auth_screen.dart'
 
