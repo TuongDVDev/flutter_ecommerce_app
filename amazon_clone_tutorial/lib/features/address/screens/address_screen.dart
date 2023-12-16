@@ -1,7 +1,11 @@
 import 'package:amazon_clone_tutorial/constants/global_variables.dart';
+import 'package:amazon_clone_tutorial/constants/utils.dart';
 import 'package:amazon_clone_tutorial/defaultConfigPayJson.dart';
+import 'package:amazon_clone_tutorial/features/address/services/address_services.dart';
+import 'package:amazon_clone_tutorial/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:pay/pay.dart';
+import 'package:provider/provider.dart';
 // import 'package:amazon_clone_tutorial/defaultConfigPayJson.dart'
 //     as payment_configurations;
 import '../../../common/widgets/custom_textfield.dart';
@@ -25,7 +29,32 @@ class _AddressScreenState extends State<AddressScreen> {
   final TextEditingController cityController = TextEditingController();
   final _addressFormKey = GlobalKey<FormState>();
 
+  String addressToBeUsed = "";
   List<PaymentItem> paymentItems = [];
+  final AddressServices addressServices = AddressServices();
+
+  @override
+  void initState() {
+    super.initState();
+    paymentItems.add(
+      PaymentItem(
+        amount: widget.totalAmount,
+        label: 'Total Amount',
+        status: PaymentItemStatus.final_price,
+      ),
+    );
+  }
+
+  // List<PaymentItem> get paymentItems {
+  //   const paymentItems = [
+  //     PaymentItem(
+  //       label: 'Total',
+  //       amount: '99.99',
+  //       status: PaymentItemStatus.final_price,
+  //     )
+  //   ];
+  //   return paymentItems;
+  // }
 
   @override
   void dispose() {
@@ -36,11 +65,54 @@ class _AddressScreenState extends State<AddressScreen> {
     cityController.dispose();
   }
 
-  void onGooglePayResult(res) {}
+  void onGooglePayResult(res) {
+    if (Provider.of<UserProvider>(context, listen: false)
+        .user
+        .address
+        .isEmpty) {
+      addressServices.saveUserAddress(
+          context: context, address: addressToBeUsed);
+    }
+    addressServices.placeOrder(
+      context: context,
+      address: addressToBeUsed,
+      totalSum: double.parse(widget.totalAmount),
+    );
+  }
+
+  void payPressed(String addressFromProvider) {
+    addressToBeUsed = "";
+
+    bool isForm = flatBuildingController.text.isNotEmpty ||
+        areaController.text.isNotEmpty ||
+        pincodeController.text.isNotEmpty ||
+        cityController.text.isNotEmpty;
+
+    if (isForm) {
+      if (_addressFormKey.currentState!.validate()) {
+        addressToBeUsed =
+            '${flatBuildingController.text}, ${areaController.text}, ${cityController.text} - ${pincodeController.text}';
+      } else {
+        throw Exception('Please enter all the values!');
+      }
+    } else if (addressFromProvider.isNotEmpty) {
+      addressToBeUsed = addressFromProvider;
+    } else {
+      showSnackBar(context, 'Error!');
+    }
+  }
+
+  // void onGooglePayResult(dynamic paymentResult) {
+  //   debugPrint(
+  //     paymentResult.toString(),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
-    var address = "101 Nguyen Van Linh Street";
+    // final user = Provider.of<UserProvider>(context).user;
+    // var address = user.address;
+    var address = context.watch<UserProvider>().user.address;
 
     return Scaffold(
       appBar: PreferredSize(
@@ -128,6 +200,7 @@ class _AddressScreenState extends State<AddressScreen> {
                 ),
               ),
               GooglePayButton(
+                onPressed: () => payPressed(address),
                 paymentConfiguration:
                     PaymentConfiguration.fromJsonString(defaultGooglePay),
                 onPaymentResult: onGooglePayResult,
@@ -135,7 +208,7 @@ class _AddressScreenState extends State<AddressScreen> {
                 height: 50,
                 // style: GooglePayButtonStyle.black,
                 type: GooglePayButtonType.pay,
-                margin: const EdgeInsets.only(top: 15),
+                margin: const EdgeInsets.only(top: 15.0),
                 loadingIndicator: const Center(
                   child: CircularProgressIndicator(),
                 ),
