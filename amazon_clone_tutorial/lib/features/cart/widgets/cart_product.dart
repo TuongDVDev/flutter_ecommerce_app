@@ -29,6 +29,11 @@ class _CartProductState extends State<CartProduct> {
     cartServices.removeFromCart(context: context, product: product);
   }
 
+  void deleteProductFromCart(Product product) {
+    cartServices.deleteProduct(context: context, product: product);
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final productCart = context.watch<UserProvider>().user.cart[widget.index];
@@ -163,6 +168,18 @@ class _CartProductState extends State<CartProduct> {
                       ),
                     ),
                   ],
+                ),
+              ),
+              InkWell(
+                onTap: () => deleteProductFromCart(product),
+                child: Container(
+                  width: 35,
+                  height: 32,
+                  alignment: Alignment.center,
+                  child: const Icon(
+                    Icons.delete_outline,
+                    size: 25,
+                  ),
                 ),
               ),
             ],

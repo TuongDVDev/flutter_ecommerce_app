@@ -60,6 +60,34 @@ userRouter.delete("/api/remove-from-cart/:id", auth, async (req, res) => {
     }
 });
 
+// Delete product from cart
+userRouter.delete("/api/delete-product/:id", auth, async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Find the product to delete in the database
+        const product = await Product.findById(id);
+
+        // Find user information from authenticated token
+        let user = await User.findById(req.user);
+
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        // Delete product from user's cart
+        user.cart = user.cart.filter(item => item.product._id.toString() !== id);
+
+        // Save changes to user information
+        user = await user.save();
+
+        // Returns user information after updating the cart
+        res.json(user);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
 // Save user address
 userRouter.post("/api/save-user-address", auth, async (req, res) => {
     try {

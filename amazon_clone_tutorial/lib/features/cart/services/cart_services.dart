@@ -40,4 +40,40 @@ class CartServices {
       showSnackBar(context, e.toString());
     }
   }
+
+  // Delete the product from the cart
+  void deleteProduct({
+    required BuildContext context,
+    required Product product,
+  }) async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    try {
+      http.Response res = await http.delete(
+        Uri.parse('$uri/api/delete-product/${product.id}'),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'x-auth-token': userProvider.user.token,
+        },
+        body: jsonEncode({
+          'id': product.id,
+        }),
+      );
+
+      httpErrorHandle(
+        response: res,
+        context: context,
+        onSuccess: () {
+          // Update the user's cart after successful deletion
+          User updatedUser = userProvider.user.copyWith(
+            cart: jsonDecode(res.body)['cart'],
+          );
+          userProvider.setUserFromModel(updatedUser);
+          showSnackBar(context, 'Product deleted successfully');
+        },
+      );
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+  }
 }
